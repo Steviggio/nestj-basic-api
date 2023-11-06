@@ -9,12 +9,25 @@ export class BooksController {
   constructor(private readonly booksService: BooksService) { }
 
   @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
+  async create(@Body() createBookDto: CreateBookDto) {
+    const newBook = await this.booksService.create(createBookDto);
+    return newBook;
   }
 
   @Get()
   async findAll(): Promise<Book[]> {
     return this.booksService.findAll();
+  }
+
+  @Get(":userId")
+  async findAllByUserId(@Param("userId") userId: string) {
+    const userBooks = await this.booksService.findAllByUserId(userId);
+    return userBooks;
+  }
+
+  @Put(":id")
+  async update(@Param("id") id: string, @Body() updateBookDto: UpdateBookDto) {
+    const updatedBook = await this.booksService.update(id, updateBookDto);
+    return updatedBook
   }
 }

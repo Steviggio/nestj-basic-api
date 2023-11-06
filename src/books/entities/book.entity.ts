@@ -1,4 +1,5 @@
 export class Book {
+  userId: string;
   title: string;
   author: string;
   imageUrl: string;
