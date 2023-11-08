@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Model } from 'mongoose';
-import Book, { BookDocument, BookRating } from './interfaces/books.interface';
+import { BookDocument, BookRating } from './interfaces/books.interface';
 
 @Injectable()
 export class BooksService {
@@ -45,18 +45,14 @@ export class BooksService {
       return null;
     }
   
-    // Vérifie si l'utilisateur a déjà noté ce livre
     const userExistingRatingIndex = existingBook.ratings.findIndex(rating => rating.userId === currentUserID);
   
     if (userExistingRatingIndex !== -1) {
-      // Si l'utilisateur a déjà noté ce livre, met à jour sa note
       existingBook.ratings[userExistingRatingIndex].grade = grade;
     } else {
-      // Si l'utilisateur n'a pas encore noté ce livre, ajoute une nouvelle note
       existingBook.ratings.push({ userId: currentUserID, grade: grade } as BookRating);
     }
   
-    // Recalcul de la moyenne des notes
     const totalRatings = existingBook.ratings.length;
     let totalRatingSum = 0;
   
@@ -66,7 +62,6 @@ export class BooksService {
   
     existingBook.averageRating = totalRatings > 0 ? totalRatingSum / totalRatings : 0;
   
-    // Enregistre les modifications
     return existingBook.save();
   }
   

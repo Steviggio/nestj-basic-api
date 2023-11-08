@@ -16,4 +16,8 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
+  async findOne(email: string): Promise <User | undefined> {
+    return this.userModel.findOne(user => user.email === email )
+  }
+
 }
