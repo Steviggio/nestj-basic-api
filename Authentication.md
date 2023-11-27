@@ -29,14 +29,60 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     })]
 })
-
 ```
 
-## 
+## Connect to the MongoDB database : 
+
+To connect to the database, we configure a Database provider like in the following example : 
+
+```ts 
+import * as mongoose from "mongoose";
+
+export const databaseProviders = [
+  {
+    provide: 'DATABASE_CONNECTION',
+    useFactory: async (): Promise<typeof mongoose> =>
+      await mongoose.connect('mongodb://127.0.0.1:27017/Steviggio_db')
+  }
+]
+```
+
+And we export the Database module and import it inside the App module : 
+
+```ts 
+import { Module } from "@nestjs/common";
+import { databaseProviders } from "./database.providers";
+
+@Module({
+  providers: [...databaseProviders],
+  exports: [...databaseProviders],
+})
+
+export class DatabaseModule { }
+```
+
+---
+
+We need to import the DB(database) module inside the different modules in which we need to configure a specific mongoose schema.
+The schemas are set in providers files, looking like this :
+
+```ts
+import { Mongoose } from "mongoose";
+import { BooksSchema } from "./schemas/books.schema";
+
+export const bookProviders = [
+  {
+    provide: 'Book',
+    useFactory: (mongoose: Mongoose) => mongoose.model("Book", BooksSchema),
+    inject: ['DATABASE_CONNECTION'],
+  }
+]
+```
+
 
 ## Users controllers and services :
 
-First step is to define the users services : 
+For users, we need to create services. Services contain the data operations logic. It will look like this : 
 
 ```ts
 import { Injectable, Inject } from "@nestjs/common";
