@@ -4,7 +4,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { User } from "./interfaces/user.interface";
 import { Param } from "@nestjs/common";
 
-@Controller("users")
+@Controller()
 export class UsersController {
   constructor(
     private readonly usersService: UsersService

@@ -4,9 +4,9 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { BookDocument } from './interfaces/books.interface'; // Assurez-vous de l'importer correctement
 
-@Controller('books')
+@Controller()
 export class BooksController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(private readonly booksService: BooksService) { }
 
   @Post()
   async create(@Body() createBookDto: CreateBookDto): Promise<BookDocument> {
@@ -15,7 +15,10 @@ export class BooksController {
   }
 
   @Post(":id/rate")
-  async rate(@Param("id") id: string, @Body() { userId, grade }: { userId: string, grade: number }): Promise<BookDocument> {
+  async rate(
+    @Param("id") id: string,
+    @Body() { userId, grade }: { userId: string; grade: number }
+  ): Promise<BookDocument> {
     const updatedBook = await this.booksService.setBookRate(userId, id, grade);
     if (!updatedBook) {
       throw new NotFoundException(`Book with id ${id} not found`);
