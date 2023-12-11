@@ -12,7 +12,8 @@ export class UsersController {
 
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    await this.usersService.create(createUserDto);
+    return "User has been successfully created"
   }
 
   @Get('find')

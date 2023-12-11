@@ -1,20 +1,22 @@
-import { Controller, Get, Post, Body, Put, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, NotFoundException, UseGuards } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { BookDocument } from './interfaces/books.interface'; // Assurez-vous de l'importer correctement
+import { BookDocument } from './interfaces/books.interface'; 
+import { AuthGuard } from 'src/middlewares/auth/auth.guard';
 
 @Controller()
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(@Body() createBookDto: CreateBookDto): Promise<BookDocument> {
     const newBook = await this.booksService.create(createBookDto);
     return newBook;
   }
 
-  @Post(":id/rate")
+  @Post(":id/rating")
   async rate(
     @Param("id") id: string,
     @Body() { userId, grade }: { userId: string; grade: number }

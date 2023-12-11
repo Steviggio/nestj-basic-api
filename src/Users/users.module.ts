@@ -3,7 +3,7 @@ import { UsersService } from "./users.service";
 import { UsersController } from "./users.controller";
 import { userProviders } from "./users.providers";
 import { DatabaseModule } from "src/Database/database.module";
-import { AuthMiddleware } from "src/middlewares/auth.middleware";
+import { AuthMiddleware } from "src/middlewares/auth/auth.middleware";
 import { EncryptionMiddleware } from "src/middlewares/encryption.middleware";
 // import { AuthService } from "src/auth/auth.service";
 // import { AuthModule } from "src/auth/auth.module";
@@ -19,10 +19,10 @@ export class UsersModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes("user/login")
+      .forRoutes("api/auth/login")
 
     consumer
       .apply(EncryptionMiddleware)
-      .forRoutes(UsersController);
+      .forRoutes("api/auth/signup");
   }
 }
