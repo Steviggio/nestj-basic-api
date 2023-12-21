@@ -10,14 +10,10 @@ import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector,
-    private jwtService: JwtService
-  ) { }
+  constructor(private reflector: Reflector) { }
 
-  canActivate(context: ExecutionContext): boolean {
+   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers.authorization.split(' ')[1];
-    const decodedToken = this.jwtService.verify(token, { secret: process.env.TOKEN_SECRET })
-    return decodedToken
+    return request.headers?.authorization === process.env.TOKEN_SECRET
   }
 }

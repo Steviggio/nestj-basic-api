@@ -4,31 +4,21 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { BookDocument } from './interfaces/books.interface'; 
 import { AuthGuard } from 'src/middlewares/auth/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller()
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
 
-  @Post()
   @UseGuards(AuthGuard)
+  @Post()
   async create(@Body() createBookDto: CreateBookDto): Promise<BookDocument> {
     const newBook = await this.booksService.create(createBookDto);
     return newBook;
   }
 
-  @Post(":id/rating")
-  async rate(
-    @Param("id") id: string,
-    @Body() { userId, grade }: { userId: string; grade: number }
-  ): Promise<BookDocument> {
-    const updatedBook = await this.booksService.setBookRate(userId, id, grade);
-    if (!updatedBook) {
-      throw new NotFoundException(`Book with id ${id} not found`);
-    }
-    return updatedBook;
-  }
-
   @Get()
+  @UseGuards(AuthGuard)
   async findAll(): Promise<BookDocument[]> {
     return this.booksService.findAll();
   }
